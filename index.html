@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depths of the Mind Blog</title>
+
+    <!-- CSS styles directly in the HTML -->
+    <style>
+        /* Basic styling to keep things simple */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+        }
+
+        .blog-post-section, .gallery-section, .discussion-section, .sidebar, .mind-expansions-section {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #1e1e1e;
+            border-radius: 5px;
+        }
+
+        .blog-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            height: 150px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #66ffcc;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .blog-posts, .chat-container, .mini-articles, .user-list {
+            margin-top: 20px;
+        }
+
+        .post, .chat-message {
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .chat-container {
+            height: 300px;
+            overflow-y: scroll;
+        }
+    </style>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>Depths of the Mind Blog</h1>
+
+    <!-- Blog Post Input Section -->
+    <div class="blog-post-section">
+        <h2>Write a Blog Post</h2>
+        <textarea id="blog-input" class="blog-input" placeholder="Write your blog post here..."></textarea>
+        <button onclick="publishBlog()">Publish</button>
+    </div>
+
+    <!-- Display Blog Posts Section -->
+    <div id="blog-posts" class="blog-posts">
+        <h2>Recent Blog Posts</h2>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="gallery-section">
+        <h2>Gallery</h2>
+        <img src="https://via.placeholder.com/300x200" alt="Gallery image 1">
+        <img src="https://via.placeholder.com/300x200" alt="Gallery image 2">
+    </div>
+
+    <!-- Real-Time Chat Section -->
+    <div class="discussion-section">
+        <h2>Discussion (Real-Time Chat)</h2>
+        <div class="chat-container" id="chat-container"></div>
+        <input type="text" id="chat-input" placeholder="Type a message..." style="width: 80%;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <!-- Mind Expansions Section -->
+    <div class="mind-expansions-section">
+        <h2>Mind Expansions</h2>
+        <p>Dive into deeper, eye-opening topics and theories.</p>
+        <ul>
+            <li><a href="#">Article 1: The Matrix Theory</a></li>
+            <li><a href="#">Article 2: Hidden Powers in Plain Sight</a></li>
+            <li><a href="#">Article 3: Reality is a Simulation?</a></li>
+        </ul>
+    </div>
+
+    <!-- Sidebar: Online Users and Participation Area -->
+    <div class="sidebar">
+        <h2>Who's Online</h2>
+        <div class="user-list">
+            <p>User1</p>
+            <p>User2</p>
+            <p>User3</p>
+        </div>
+
+        <h2>Mini Articles from Readers</h2>
+        <div class="mini-articles">
+            <p><strong>UserX:</strong> Mini-article from a reader...</p>
+            <p><strong>UserY:</strong> Another thought from a reader...</p>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript directly in the HTML -->
+<script>
+    // Your Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyC2XJ_lPIeJCqtaR2gOsgq2xBwCA5H5ML4",
+        authDomain: "depths-of-the-mind.firebaseapp.com",
+        projectId: "depths-of-the-mind",
+        storageBucket: "depths-of-the-mind.appspot.com",
+        messagingSenderId: "421890830277",
+        appId: "1:421890830277:web:3bdc6d18955fcd41bae5ac",
+        databaseURL: "https://depths-of-the-mind.firebaseio.com"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Function to publish a blog post
+    function publishBlog() {
+        const blogInput = document.getElementById('blog-input').value;
+        if (blogInput.trim() !== '') {
+            const blogRef = firebase.database().ref('blogs');
+            blogRef.push({
+                content: blogInput,
+                timestamp: Date.now()
+            });
+            document.getElementById('blog-input').value = ''; // Clear input after publishing
+        }
+    }
+
+    // Display blog posts
+    const blogPostsDiv = document.getElementById('blog-posts');
+    firebase.database().ref('blogs').on('child_added', function(snapshot) {
+        const post = snapshot.val();
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `<p>${post.content}</p>`;
+        blogPostsDiv.appendChild(postElement);
+    });
+
+    // Function to send a message in chat
+    function sendMessage() {
+        const chatInput = document.getElementById('chat-input').value;
+        if (chatInput.trim() !== '') {
+            const chatRef = firebase.database().ref('chats');
+            chatRef.push({
+                message: chatInput,
+                timestamp: Date.now()
+            });
+            document.getElementById('chat-input').value = ''; // Clear input after sending
+        }
+    }
+
+    // Display chat messages
+    const chatContainerDiv = document.getElementById('chat-container');
+    firebase.database().ref('chats').on('child_added', function(snapshot) {
+        const chat = snapshot.val();
+        const chatElement = document.createElement('div');
+        chatElement.className = 'chat-message';
+        chatElement.innerHTML = `<p>${chat.message}</p>`;
+        chatContainerDiv.appendChild(chatElement);
+    });
+</script>
+
+</body>
+</html>
