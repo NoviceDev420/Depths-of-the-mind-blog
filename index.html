@@ -3,57 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Depths of the Mind Blog</title>
-
-    <!-- CSS styles directly in the HTML -->
+    <meta name="description" content="David's Personal Blog - Modern, futuristic, and interactive.">
+    <title>David's Blog - Depths of the Mind</title>
     <style>
-        /* Basic styling to keep things simple */
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            color: #66ffcc;
+            font-size: 2.5rem;
         }
 
         .container {
-            width: 90%;
-            margin: auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            width: 85%;
+            max-width: 1200px;
+            margin: 2rem 0;
         }
 
-        .blog-post-section, .gallery-section, .discussion-section, .sidebar, .mind-expansions-section {
-            margin-top: 20px;
-            padding: 10px;
+        .article-section, .mind-expansions-section {
             background-color: #1e1e1e;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .blog-input {
-            width: 100%;
-            padding: 10px;
+        .article-section h2, .mind-expansions-section h2 {
+            color: #66ffcc;
             margin-bottom: 10px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            height: 150px;
         }
 
-        button {
-            padding: 10px;
-            background-color: #66ffcc;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        .article-image {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
 
-        .blog-posts, .chat-container, .mini-articles, .user-list {
-            margin-top: 20px;
-        }
-
-        .post, .chat-message {
+        .discussion-section {
             background-color: #1e1e1e;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .discussion-section h3 {
+            color: #66ffcc;
             margin-bottom: 10px;
         }
 
@@ -61,27 +75,86 @@
             height: 300px;
             overflow-y: scroll;
         }
-    </style>
 
-    <!-- Firebase SDKs -->
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .sidebar {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+        }
+
+        .sidebar h4 {
+            color: #66ffcc;
+        }
+
+        .user-list, .mini-articles {
+            margin: 10px 0;
+        }
+
+        footer {
+            background-color: #1e1e1e;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+            margin-top: auto;
+        }
+
+        footer p {
+            margin: 0;
+            color: #66ffcc;
+        }
+
+    </style>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
 </head>
 <body>
 
-<div class="container">
-    <h1>Depths of the Mind Blog</h1>
+<header>
+    <h1>Depths of the Mind</h1>
+</header>
 
-    <!-- Blog Post Input Section -->
-    <div class="blog-post-section">
-        <h2>Write a Blog Post</h2>
-        <textarea id="blog-input" class="blog-input" placeholder="Write your blog post here..."></textarea>
-        <button onclick="publishBlog()">Publish</button>
+<div class="container">
+    <!-- Main Article Section -->
+    <div class="article-section">
+        <h2>Article of the Day</h2>
+        <img src="https://via.placeholder.com/800x400" alt="Featured article image" class="article-image">
+        <p>Write your featured article here. This could be a daily thought, a new discovery, or anything that stands out to you today!</p>
     </div>
 
-    <!-- Display Blog Posts Section -->
-    <div id="blog-posts" class="blog-posts">
-        <h2>Recent Blog Posts</h2>
+    <!-- Sidebar: Online Users and Participation Area -->
+    <div class="sidebar">
+        <h4>Who's Online</h4>
+        <div class="user-list">
+            <p>User1</p>
+            <p>User2</p>
+            <p>User3</p>
+        </div>
+
+        <h4>Mini Articles from Readers</h4>
+        <div class="mini-articles">
+            <p><strong>UserX:</strong> Mini-article or thought by a reader...</p>
+            <p><strong>UserY:</strong> Another thought from a reader...</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Real-time Discussion Section on the side -->
+    <div class="discussion-section">
+        <h3>Discussion (Real-Time Chat)</h3>
+        <div class="chat-container" id="chat-container">
+            <!-- Real-time messages will appear here -->
+        </div>
+        <input type="text" id="message-input" placeholder="Type a message..." style="width: 80%;">
+        <button onclick="sendMessage()">Send</button>
     </div>
 
     <!-- Gallery Section -->
@@ -89,106 +162,66 @@
         <h2>Gallery</h2>
         <img src="https://via.placeholder.com/300x200" alt="Gallery image 1">
         <img src="https://via.placeholder.com/300x200" alt="Gallery image 2">
-    </div>
-
-    <!-- Real-Time Chat Section -->
-    <div class="discussion-section">
-        <h2>Discussion (Real-Time Chat)</h2>
-        <div class="chat-container" id="chat-container"></div>
-        <input type="text" id="chat-input" placeholder="Type a message..." style="width: 80%;">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <!-- Mind Expansions Section -->
-    <div class="mind-expansions-section">
-        <h2>Mind Expansions</h2>
-        <p>Dive into deeper, eye-opening topics and theories.</p>
-        <ul>
-            <li><a href="#">Article 1: The Matrix Theory</a></li>
-            <li><a href="#">Article 2: Hidden Powers in Plain Sight</a></li>
-            <li><a href="#">Article 3: Reality is a Simulation?</a></li>
-        </ul>
-    </div>
-
-    <!-- Sidebar: Online Users and Participation Area -->
-    <div class="sidebar">
-        <h2>Who's Online</h2>
-        <div class="user-list">
-            <p>User1</p>
-            <p>User2</p>
-            <p>User3</p>
-        </div>
-
-        <h2>Mini Articles from Readers</h2>
-        <div class="mini-articles">
-            <p><strong>UserX:</strong> Mini-article from a reader...</p>
-            <p><strong>UserY:</strong> Another thought from a reader...</p>
-        </div>
+        <!-- Add more gallery images as needed -->
     </div>
 </div>
 
-<!-- JavaScript directly in the HTML -->
+<!-- Mind Expansions Section -->
+<div class="mind-expansions-section container">
+    <h2>Mind Expansions</h2>
+    <p>This is the section where you can dive into deeper, eye-opening topics—conspiracies, hidden truths, and intriguing theories that challenge perspectives.</p>
+    <ul>
+        <li><a href="#">Article 1: The Matrix Theory</a></li>
+        <li><a href="#">Article 2: Hidden Powers in Plain Sight</a></li>
+        <li><a href="#">Article 3: Reality is a Simulation?</a></li>
+        <!-- Add more as needed -->
+    </ul>
+</div>
+
+<footer>
+    <p>David's Blog &copy; 2024</p>
+</footer>
+
 <script>
-    // Your Firebase config
+    // Initialize Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyC2XJ_lPIeJCqtaR2gOsgq2xBwCA5H5ML4",
         authDomain: "depths-of-the-mind.firebaseapp.com",
         projectId: "depths-of-the-mind",
         storageBucket: "depths-of-the-mind.appspot.com",
         messagingSenderId: "421890830277",
-        appId: "1:421890830277:web:3bdc6d18955fcd41bae5ac",
-        databaseURL: "https://depths-of-the-mind.firebaseio.com"
+        appId: "1:421890830277:web:3bdc6d18955fcd41bae5ac"
     };
 
-    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Function to publish a blog post
-    function publishBlog() {
-        const blogInput = document.getElementById('blog-input').value;
-        if (blogInput.trim() !== '') {
-            const blogRef = firebase.database().ref('blogs');
-            blogRef.push({
-                content: blogInput,
-                timestamp: Date.now()
-            });
-            document.getElementById('blog-input').value = ''; // Clear input after publishing
-        }
-    }
+    const chatContainer = document.getElementById('chat-container');
 
-    // Display blog posts
-    const blogPostsDiv = document.getElementById('blog-posts');
-    firebase.database().ref('blogs').on('child_added', function(snapshot) {
-        const post = snapshot.val();
-        const postElement = document.createElement('div');
-        postElement.className = 'post';
-        postElement.innerHTML = `<p>${post.content}</p>`;
-        blogPostsDiv.appendChild(postElement);
+    // Listen for new messages
+    firebase.database().ref('messages').on('child_added', function(snapshot) {
+        const message = snapshot.val();
+        const messageElement = document.createElement('p');
+        messageElement.textContent = message.user + ': ' + message.text;
+        chatContainer.appendChild(messageElement);
+        chatContainer.scrollTop = chatContainer.scrollHeight;  // Auto-scroll to the bottom
     });
 
-    // Function to send a message in chat
+    // Send message function
     function sendMessage() {
-        const chatInput = document.getElementById('chat-input').value;
-        if (chatInput.trim() !== '') {
-            const chatRef = firebase.database().ref('chats');
-            chatRef.push({
-                message: chatInput,
-                timestamp: Date.now()
+        const messageInput = document.getElementById('message-input');
+        const newMessage = messageInput.value;
+
+        if (newMessage.trim() !== '') {
+            const user = 'David';  // Static for now, replace with actual logged-in user data
+            const messagesRef = firebase.database().ref('messages');
+            messagesRef.push({
+                user: user,
+                text: newMessage
             });
-            document.getElementById('chat-input').value = ''; // Clear input after sending
+            messageInput.value = '';  // Clear input after sending
         }
     }
-
-    // Display chat messages
-    const chatContainerDiv = document.getElementById('chat-container');
-    firebase.database().ref('chats').on('child_added', function(snapshot) {
-        const chat = snapshot.val();
-        const chatElement = document.createElement('div');
-        chatElement.className = 'chat-message';
-        chatElement.innerHTML = `<p>${chat.message}</p>`;
-        chatContainerDiv.appendChild(chatElement);
-    });
 </script>
 
 </body>
